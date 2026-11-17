@@ -1,0 +1,51 @@
+{
+  "type": "object",
+  "properties": {
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "post_id": { "type": "string" },
+          "keep": { "type": "boolean" },
+          "refined": {
+            "type": "object",
+            "properties": {
+              "actor": { "type": "string" },
+              "problem": { "type": "string" },
+              "workaround": { "type": "string" },
+              "payment_signal": { "type": "string", "enum": ["none", "weak", "medium", "strong"] },
+              "comment_insight": { "type": "string" }
+            },
+            "required": ["actor", "problem", "workaround", "payment_signal", "comment_insight"]
+          },
+          "assignment": {
+            "type": "object",
+            "properties": {
+              "type": { "type": "string", "enum": ["existing", "new"] },
+              "cluster_key": { "type": "string" },
+              "new_ref": { "type": "string" }
+            },
+            "required": ["type", "cluster_key", "new_ref"]
+          }
+        },
+        "required": ["post_id", "keep", "refined", "assignment"]
+      }
+    },
+    "new_clusters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "new_ref": { "type": "string" },
+          "title": { "type": "string" },
+          "problem": { "type": "string" },
+          "audience": { "type": "string" },
+          "workaround": { "type": "string" }
+        },
+        "required": ["new_ref", "title", "problem", "audience", "workaround"]
+      }
+    }
+  },
+  "required": ["results", "new_clusters"]
+}
