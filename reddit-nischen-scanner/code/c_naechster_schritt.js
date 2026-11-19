@@ -3,5 +3,8 @@ const cfg = $('Einstellungen').first().json;
 const erg = $('Ergebnisse auswerten').first().json;
 const naechsteRunde = cfg.runde + 1;
 const budgetErreicht = naechsteRunde >= cfg.maxRundenProTag;
-const phase = erg.weitere && !budgetErreicht ? 'analyse' : 'cluster';
+// Schlagen alle KI-Batches fehl (z. B. ungültiger OpenAI-Key), nicht weiter im Kreis laufen
+const allesFehlgeschlagen = erg.fehlerBatches > 0 && erg.analysiert.length === 0;
+const phase = erg.weitere && !budgetErreicht && !allesFehlgeschlagen ? 'analyse' : 'cluster';
+if (allesFehlgeschlagen) throw new Error('Alle KI-Batches fehlgeschlagen – OpenAI-Zugang prüfen. Die Posts bleiben unanalysiert und werden beim nächsten Lauf erneut versucht.');
 return [{ json: { phase, runde: phase === 'analyse' ? naechsteRunde : 0, budgetErreicht } }];

@@ -213,7 +213,7 @@ const communitiesAktualisieren = node({
 const naechsterSchritt = node({
   type: 'n8n-nodes-base.code',
   version: 2,
-  config: { name: 'Nächster Schritt', parameters: { mode: 'runOnceForAllItems', language: 'javaScript', jsCode: "// Nächste Runde: weiter analysieren oder zur Clusterbildung wechseln\nconst cfg = $('Einstellungen').first().json;\nconst erg = $('Ergebnisse auswerten').first().json;\nconst naechsteRunde = cfg.runde + 1;\nconst budgetErreicht = naechsteRunde >= cfg.maxRundenProTag;\nconst phase = erg.weitere && !budgetErreicht ? 'analyse' : 'cluster';\nreturn [{ json: { phase, runde: phase === 'analyse' ? naechsteRunde : 0, budgetErreicht } }];\n" }, position: [1880, 400] },
+  config: { name: 'Nächster Schritt', parameters: { mode: 'runOnceForAllItems', language: 'javaScript', jsCode: "// Nächste Runde: weiter analysieren oder zur Clusterbildung wechseln\nconst cfg = $('Einstellungen').first().json;\nconst erg = $('Ergebnisse auswerten').first().json;\nconst naechsteRunde = cfg.runde + 1;\nconst budgetErreicht = naechsteRunde >= cfg.maxRundenProTag;\n// Schlagen alle KI-Batches fehl (z. B. ungültiger OpenAI-Key), nicht weiter im Kreis laufen\nconst allesFehlgeschlagen = erg.fehlerBatches > 0 && erg.analysiert.length === 0;\nconst phase = erg.weitere && !budgetErreicht && !allesFehlgeschlagen ? 'analyse' : 'cluster';\nif (allesFehlgeschlagen) throw new Error('Alle KI-Batches fehlgeschlagen – OpenAI-Zugang prüfen. Die Posts bleiben unanalysiert und werden beim nächsten Lauf erneut versucht.');\nreturn [{ json: { phase, runde: phase === 'analyse' ? naechsteRunde : 0, budgetErreicht } }];\n" }, position: [1880, 400] },
   output: [{ phase: 'analyse', runde: 1, budgetErreicht: false }],
 });
 

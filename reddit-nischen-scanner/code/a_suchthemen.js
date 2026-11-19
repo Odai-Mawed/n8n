@@ -66,6 +66,7 @@ for (let i = 0; i < cfg.kategorienProLauf; i++) {
   const [nische, woerter] = taxonomie[(start + i) % taxonomie.length];
   // Arctic Shift sucht nach Subreddit-Namen (Präfix): 'dog training' -> 'dogtraining'
   const praefixe = new Set(woerter.map((w) => w.toLowerCase().replace(/[^a-z0-9]/g, '')));
-  for (const q of praefixe) out.push({ json: { modus: 'search', q, nische, limit: cfg.ergebnisseProSuche, userAgent: cfg.userAgent } });
+  const kategorieWoerter = [...new Set(woerter.join(' ').toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length >= 3))];
+  for (const q of praefixe) out.push({ json: { modus: 'search', q, nische, kategorieWoerter, limit: cfg.ergebnisseProSuche, userAgent: cfg.userAgent } });
 }
 return out;

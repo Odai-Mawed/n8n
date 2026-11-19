@@ -30,6 +30,11 @@ antworten.forEach((it, idx) => {
     if (abonnenten < MIN_ABONNENTEN) { verworfen.klein++; continue; }
     if (abonnenten > MAX_ABONNENTEN || SPERRLISTE.includes(key)) { verworfen.gross++; continue; }
     if (ALLGEMEIN.test(name) || ALLGEMEIN.test(s.public_description || '')) { verworfen.allgemein++; continue; }
+    // Relevanz: Name = Suchwort oder Beschreibung enthält ein Nischenwort als ganzes Wort (filtert z. B. 'Farmingdale')
+    const woerter = thema.kategorieWoerter || [];
+    const text = (String(s.public_description || '') + ' ' + String(s.title || '')).toLowerCase();
+    const relevant = key === thema.q || woerter.some((w) => new RegExp('\\b' + w + '(s|ing|ers?)?\\b').test(text));
+    if (!relevant) { verworfen.allgemein++; continue; }
     if (proWort >= MAX_PRO_SUCHWORT) continue;
     proWort++;
     neu.set(key, {
