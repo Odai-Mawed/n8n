@@ -6,5 +6,5 @@ const budgetErreicht = naechsteRunde >= cfg.maxRundenProTag;
 // Schlagen alle KI-Batches fehl (z. B. ungültiger OpenAI-Key), nicht weiter im Kreis laufen
 const allesFehlgeschlagen = erg.fehlerBatches > 0 && erg.analysiert.length === 0;
 const phase = erg.weitere && !budgetErreicht && !allesFehlgeschlagen ? 'analyse' : 'cluster';
-if (allesFehlgeschlagen) throw new Error('Alle KI-Batches fehlgeschlagen – OpenAI-Zugang prüfen. Die Posts bleiben unanalysiert und werden beim nächsten Lauf erneut versucht.');
+if (allesFehlgeschlagen) throw new Error('Alle KI-Batches dieser Runde fehlgeschlagen (OpenAI-Zugang oder Antwortformat prüfen). Die Posts bleiben unanalysiert und werden beim nächsten Lauf erneut versucht.');
 return [{ json: { phase, runde: phase === 'analyse' ? naechsteRunde : 0, budgetErreicht } }];

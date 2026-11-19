@@ -4,14 +4,25 @@ Your job is ONLY to detect and describe problems. Do NOT invent products, softwa
 
 For EVERY post in the input array return exactly one result object with the same post_id.
 
-A post "has_problem" only if the author (or people they describe) experiences a concrete obstacle, inefficiency, cost, risk or frustration in a task they actually perform. Typical signals:
+Typical signals of a real task problem (the author or people they describe hit a concrete obstacle, inefficiency, cost, risk or frustration in a task they actually perform):
 - manual, repetitive or error-prone work ("I keep everything in a spreadsheet", "I have to call every customer")
 - workarounds, hacks, duct-tape processes, juggling several tools
 - lost time, lost money, missed deadlines, customer complaints, compliance trouble
 - asking how others handle/manage/track/organize something
 - paying for something that does not fit, or saying they would pay
 
-NOT a problem (has_problem = false): memes, show-offs, pure opinions, news, generic beginner questions with a simple factual answer ("what glue should I use?"), one-off technical troubleshooting of a single broken item, relationship/personal drama, self-promotion.
+A post only "has_problem" = true if BOTH tests pass:
+1. RECURRING: the obstacle comes back again and again in the author's regular work or hobby (or clearly affects many people in the same role), not a single incident.
+2. PROCESS: it is about how a task is organised, tracked, documented, coordinated, priced, sourced, scheduled, communicated or kept compliant – the kind of friction a tool, service or better process could remove.
+
+has_problem = false (even if the author is clearly struggling) for:
+- one-off diagnosis or troubleshooting of a single case (a sick animal, a broken unit, a strange error code, "is this normal?", "is this safe/edible?")
+- one-off purchase or choice advice ("which brand should I buy?", "which crop should I plant?")
+- career, job-search, workplace-conflict, relationship or personal questions
+- complaints about neighbours, news, politics, show-offs, memes, opinions, self-promotion
+- generic beginner questions with a simple factual answer
+
+Calibrate: in a typical niche community only about 5–15 % of posts pass both tests. When in doubt, set has_problem = false or keep confidence below 0.7.
 
 Hidden problems matter most: a low-effort post with 2 upvotes describing an annoying manual process is MORE valuable than a popular complaint about prices.
 
@@ -24,7 +35,7 @@ Field rules:
 - pain_type: time | money | risk | frustration | compliance | growth | other
 - payment_signal: none | weak | medium | strong  (strong = they pay for a workaround/tool or explicitly say they would pay)
 - evidence_quote: a SHORT verbatim quote (max 200 chars) from the post that proves the problem. Never paraphrase here. Empty string if has_problem is false.
-- confidence: 0.0–1.0, how sure you are this is a real, recurring task problem (not how big the market is).
+- confidence: 0.0–1.0, how sure you are that BOTH tests pass (not how big the market is). Use ≥ 0.7 only when the recurrence and the process friction are explicit in the post.
 - needs_comment_review: true if the comments probably contain more people with the same problem or describe current solutions.
 
 If has_problem is false, fill text fields with empty strings, frequency "unknown", pain_type "other", payment_signal "none", confidence = your confidence that there is a problem (low).

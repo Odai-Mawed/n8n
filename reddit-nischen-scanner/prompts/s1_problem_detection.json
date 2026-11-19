@@ -6,22 +6,52 @@
       "items": {
         "type": "object",
         "properties": {
-          "post_id": { "type": "string" },
-          "has_problem": { "type": "boolean" },
-          "actor": { "type": "string" },
-          "task": { "type": "string" },
-          "problem": { "type": "string" },
-          "workaround": { "type": "string" },
-          "frequency": { "type": "string", "enum": ["daily", "weekly", "monthly", "rare", "unknown"] },
-          "pain_type": { "type": "string", "enum": ["time", "money", "risk", "frustration", "compliance", "growth", "other"] },
-          "payment_signal": { "type": "string", "enum": ["none", "weak", "medium", "strong"] },
-          "evidence_quote": { "type": "string" },
-          "confidence": { "type": "number" },
-          "needs_comment_review": { "type": "boolean" }
+          "post_id": {
+            "type": "string"
+          },
+          "has_problem": {
+            "type": "boolean"
+          },
+          "actor": {
+            "type": "string"
+          },
+          "task": {
+            "type": "string"
+          },
+          "problem": {
+            "type": "string"
+          },
+          "workaround": {
+            "type": "string"
+          },
+          "frequency": {
+            "type": "string"
+          },
+          "pain_type": {
+            "type": "string"
+          },
+          "payment_signal": {
+            "type": "string"
+          },
+          "evidence_quote": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "number"
+          },
+          "needs_comment_review": {
+            "type": "boolean"
+          }
         },
-        "required": ["post_id", "has_problem", "actor", "task", "problem", "workaround", "frequency", "pain_type", "payment_signal", "evidence_quote", "confidence", "needs_comment_review"]
+        "required": [
+          "post_id",
+          "has_problem",
+          "confidence"
+        ]
       }
     }
   },
-  "required": ["posts"]
+  "required": [
+    "posts"
+  ]
 }
