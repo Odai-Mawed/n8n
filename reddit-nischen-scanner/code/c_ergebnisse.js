@@ -21,7 +21,8 @@ ergebnisse.forEach((it, idx) => {
     const s = (stats[p.subreddit] = stats[p.subreddit] || { gescannt: 0, gefunden: 0 });
     s.gescannt++;
     const r = proPost.get(String(p.post_id));
-    if (!r || !r.has_problem) continue;
+    // Beide Tests müssen erfüllt sein (wiederkehrend UND Prozess-Problem)
+    if (!r || !r.has_problem || r.is_recurring !== true || r.is_process_problem !== true) continue;
     const conf = Math.max(0, Math.min(1, Number(r.confidence) || 0));
     if (conf < cfg.pruefConfidence) continue;
     const src = quelle.get(p.post_id) || {};

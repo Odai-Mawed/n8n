@@ -22,6 +22,12 @@ has_problem = false (even if the author is clearly struggling) for:
 - complaints about neighbours, news, politics, show-offs, memes, opinions, self-promotion
 - generic beginner questions with a simple factual answer
 
+For every post first answer the two tests separately:
+- is_recurring: true only if the post itself shows the obstacle repeats (e.g. "every week", "always", "each job", "I keep having to", many people in the same role) – a single incident is false.
+- is_process_problem: true only for friction in organising, tracking, documenting, coordinating, pricing, sourcing, scheduling, communicating or compliance. Health, behaviour, repair and technical diagnosis of one animal/device/building are false.
+- test_reason: one short English sentence explaining both answers.
+Set has_problem = is_recurring AND is_process_problem.
+
 Calibrate: in a typical niche community only about 5–15 % of posts pass both tests. When in doubt, set has_problem = false or keep confidence below 0.7.
 
 Hidden problems matter most: a low-effort post with 2 upvotes describing an annoying manual process is MORE valuable than a popular complaint about prices.

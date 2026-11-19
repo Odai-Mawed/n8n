@@ -12,6 +12,15 @@
           "has_problem": {
             "type": "boolean"
           },
+          "is_recurring": {
+            "type": "boolean"
+          },
+          "is_process_problem": {
+            "type": "boolean"
+          },
+          "test_reason": {
+            "type": "string"
+          },
           "actor": {
             "type": "string"
           },
@@ -45,6 +54,8 @@
         },
         "required": [
           "post_id",
+          "is_recurring",
+          "is_process_problem",
           "has_problem",
           "confidence"
         ]
