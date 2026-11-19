@@ -10,7 +10,8 @@ const fehler = [];
 antworten.forEach((it, idx) => {
   const c = auswahl[idx];
   if (!c) return;
-  const kinder = (it.json && it.json.data && it.json.data.children) || null;
+  const d0 = it.json && it.json.data;
+  const kinder = Array.isArray(d0) ? d0.map((x) => ({ data: x })) : (d0 && d0.children) || null;
   if (!kinder) { fehler.push(c.name); return; }
   const grenze = jetzt / 1000 - c.zeitfensterStunden * 3600;
 

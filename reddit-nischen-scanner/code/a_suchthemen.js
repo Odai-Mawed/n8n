@@ -2,7 +2,6 @@
 const cfg = {
   kategorienProLauf: 6,      // so viele Kategorien werden pro Lauf durchsucht (rotierend)
   ergebnisseProSuche: 25,
-  neueSubredditsPruefen: true, // zusätzlich /subreddits/new abfragen
   userAgent: 'n8n:reddit-nischen-scanner:1.0 (by /u/DEIN_REDDIT_NAME)',
 };
 
@@ -65,7 +64,8 @@ const start = (runde * cfg.kategorienProLauf) % taxonomie.length;
 const out = [];
 for (let i = 0; i < cfg.kategorienProLauf; i++) {
   const [nische, woerter] = taxonomie[(start + i) % taxonomie.length];
-  for (const q of woerter) out.push({ json: { modus: 'search', q, nische, limit: cfg.ergebnisseProSuche, userAgent: cfg.userAgent } });
+  // Arctic Shift sucht nach Subreddit-Namen (Präfix): 'dog training' -> 'dogtraining'
+  const praefixe = new Set(woerter.map((w) => w.toLowerCase().replace(/[^a-z0-9]/g, '')));
+  for (const q of praefixe) out.push({ json: { modus: 'search', q, nische, limit: cfg.ergebnisseProSuche, userAgent: cfg.userAgent } });
 }
-if (cfg.neueSubredditsPruefen) out.push({ json: { modus: 'new', q: '', nische: 'Neu entdeckt', limit: 100, userAgent: cfg.userAgent } });
 return out;

@@ -6,10 +6,23 @@ KI-gestützte Problem-Discovery-Engine: findet versteckte Probleme in ungewöhnl
 
 | Workflow | Zeitplan | Aufgabe |
 | --- | --- | --- |
-| `01_REDDIT_NICHE_DISCOVERY` | Di & Fr 05:00 | Rotierende Nischen-Taxonomie (48 Kategorien) → `/subreddits/search` + `/subreddits/new` → neue Communities als `explore` |
+| `01_REDDIT_NICHE_DISCOVERY` | Di & Fr 05:00 | Rotierende Nischen-Taxonomie (48 Kategorien) → Subreddit-Präfixsuche → max. 4 größte Treffer je Suchwort → neue Communities als `explore` |
 | `02_REDDIT_COLLECTOR` | täglich 06:00 | 32 bewährte + 8 experimentelle Communities, je 25 neueste Posts, 36-h-Fenster, keine Popularitätsfilter, 48-h-Puffer; startet 03 |
 | `03_PROBLEM_INTELLIGENCE` | von 02 gestartet | **Analyse** in Runden (4 Batches × 18 Posts pro Ausführung, max. 15 Runden/Tag) → **Cluster**: bis 20 Kommentar-Threads vertiefen, KI ordnet Probleme bestehenden/neuen Clustern zu |
 | `04_OPPORTUNITY_RANKING` | täglich 09:00 | bis 10 Cluster per Reddit-Suche nachprüfen, Idee + 6 Bewertungen, Score + Evidenzklasse, Top 5 per Telegram |
+
+## Datenquelle: Arctic Shift statt Reddit-API
+
+Reddit vergibt seit November 2025 keine API-Zugänge mehr per Selbstbedienung (Responsible Builder Policy). Die Workflows lesen deshalb über die freie, öffentliche **Arctic-Shift-API** (`arctic-shift.photon-reddit.com`): kein Login, kein Key, gleiche Datenfelder wie Reddit.
+
+| Zweck | Endpoint |
+| --- | --- |
+| Communities finden (01) | `/api/subreddits/search?subreddit_prefix=…` (Suche nach Namensanfang) |
+| Neueste Posts (02) | `/api/posts/search?subreddit=…&sort=desc&limit=25` |
+| Kommentare (03) | `/api/comments/search?link_id=t3_…` |
+| Nachprüfung (04) | neueste 100 Posts der Hauptcommunities, Suchbegriffe lokal abgeglichen |
+
+Einschränkungen: Community-Projekt ohne Verfügbarkeitsgarantie; die Volltextsuche (`query`/`title`) lief in Tests in Timeouts und wird deshalb nicht genutzt. Für eine kommerzielle Nutzung der Inhalte ist die Rechtslage gegenüber Reddit nicht geklärt – vor einem Produkt prüfen.
 
 ## Abweichungen von der Architektur-Vorlage
 
@@ -27,15 +40,15 @@ Top 5 nur ab 75 Punkten **und** Klasse ≥ B; zusätzlich höchstens eine als �
 
 ## Inbetriebnahme
 
-1. Reddit-API-Zugang genehmigen lassen (für kommerzielle Nutzung ist eine schriftliche Freigabe nötig) und in n8n ein Credential **Reddit OAuth2** anlegen. Es in den HTTP-Nodes aller vier Workflows auswählen.
-2. In den Einstellungs-Nodes (`Suchthemen wählen`, `Communities auswählen`, `Einstellungen` in 03/04) den `userAgent` auf deinen Reddit-Namen setzen.
-3. `01` einmal manuell starten → Pool füllt sich.
-4. Zum Start in `02 › Communities auswählen` z. B. 10 + 5 Communities einstellen, `02` manuell starten und die Ergebnisse in `reddit_problems` prüfen.
-5. Danach 32 + 8 einstellen und alle vier Workflows aktivieren.
-6. Nach 7 Tagen auswerten: qualifizierte Probleme pro 100 Posts, Fehlerquote, Kosten pro brauchbarem Cluster, Anteil Ideen, die manuell interessant bleiben.
+1. Kein Reddit-Credential nötig (Arctic Shift). OpenAI und Telegram sind bereits verbunden.
+2. `01` einmal manuell starten → Pool füllt sich.
+3. Zum Start in `02 › Communities auswählen` z. B. 10 + 5 Communities einstellen, `02` manuell starten und die Ergebnisse in `reddit_problems` prüfen.
+4. Danach 32 + 8 einstellen und alle vier Workflows aktivieren.
+5. Nach 7 Tagen auswerten: qualifizierte Probleme pro 100 Posts, Fehlerquote, Kosten pro brauchbarem Cluster, Anteil Ideen, die manuell interessant bleiben.
 
 ## Dateien
 
 - `workflows/*.ts`: n8n-Workflow-SDK-Quellen mit Platzhaltern `"__JS:…__"` / `"__TXT:…__"`
 - `code/*.js`: Code-Nodes · `prompts/*.md`: System-Prompts · `prompts/*.json`: Output-Schemas
-- `python3 build.py` → `build/*.ts` (vollständige SDK-Dateien wie in n8n eingespielt)
+- `python3 build.py` → `build/*.ts` (vollständige SDK-Dateien)
+- Hinweis: Die HTTP-Nodes in `workflows/*.ts` zeigen noch die ursprüngliche Reddit-OAuth-Variante. Die Code-Nodes (`code/*.js`) sind auf Arctic Shift umgestellt; der maßgebliche Stand der HTTP-Nodes liegt in n8n.

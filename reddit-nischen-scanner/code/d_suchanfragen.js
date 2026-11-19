@@ -1,18 +1,13 @@
-// Aus den KI-Suchbegriffen Reddit-Suchanfragen bauen (2x Reddit-weit, 1x in der Hauptcommunity)
+// Nachprüfung: je Cluster die neuesten 100 Posts der (bis zu 2) wichtigsten Communities laden.
+// Die KI-Suchbegriffe werden danach lokal abgeglichen (Arctic-Shift-Volltextsuche ist zu langsam).
 const cfg = $('Einstellungen').first().json;
 const kandidaten = $('Kandidaten wählen').all().map((i) => i.json);
 const out = [];
 $input.all().forEach((it, idx) => {
   const k = kandidaten[idx];
   if (!k) return;
-  const qs = ((it.json.output && it.json.output.queries) || []).map((q) => String(q).trim()).filter(Boolean).slice(0, 3);
-  qs.forEach((q, qi) => {
-    const lokal = qi === 2 && k.haupt_subreddit;
-    out.push({ json: {
-      cluster_key: k.cluster_key, q,
-      url: lokal ? 'https://oauth.reddit.com/r/' + k.haupt_subreddit + '/search' : 'https://oauth.reddit.com/search',
-      restrict_sr: lokal ? '1' : '0', t: lokal ? 'all' : 'year', userAgent: cfg.userAgent,
-    } });
-  });
+  const queries = ((it.json.output && it.json.output.queries) || []).map((q) => String(q).trim()).filter(Boolean).slice(0, 3);
+  const subs = [...new Set(k.belege.map((b) => b.subreddit).filter(Boolean))].slice(0, 2);
+  for (const sub of subs) out.push({ json: { cluster_key: k.cluster_key, subreddit: sub, queries, userAgent: cfg.userAgent } });
 });
 return out;

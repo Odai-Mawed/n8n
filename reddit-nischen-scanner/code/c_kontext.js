@@ -7,8 +7,10 @@ try {
   antworten.forEach((it, idx) => {
     const k = kandidaten[idx] && kandidaten[idx].json;
     const body = it.json && it.json.body;
-    if (!k || !Array.isArray(body) || !body[1]) return;
-    const liste = ((body[1].data && body[1].data.children) || [])
+    if (!k || !body) return;
+    // Arctic Shift: { data: [kommentar, ...] } – Reddit: [post, { data: { children } }]
+    const roh = Array.isArray(body.data) ? body.data.map((x) => ({ kind: 't1', data: x })) : Array.isArray(body) && body[1] ? (body[1].data && body[1].data.children) || [] : [];
+    const liste = roh
       .filter((c) => c.kind === 't1' && c.data && c.data.body && !c.data.stickied && c.data.author !== 'AutoModerator' && !['[removed]', '[deleted]'].includes(c.data.body))
       .sort((a, b) => (b.data.score || 0) - (a.data.score || 0))
       .slice(0, 8)
