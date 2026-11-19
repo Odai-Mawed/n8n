@@ -11,7 +11,7 @@ const cfg = {
   pruefConfidence: 0.40,      // 0.40–0.69: niedrig priorisierte Prüfliste
   maxKommentarThreads: 20,    // Kommentar-Vertiefungen pro Tag
   maxProblemeProClusterlauf: 45,
-  problemeProClusterBatch: 15,
+  problemeProClusterBatch: 45, // alle in EINEM KI-Aufruf, damit gleiche Probleme zusammengefasst werden
   maxBekannteCluster: 200,    // so viele bestehende Cluster sieht das Cluster-Modell
   userAgent: 'n8n:reddit-nischen-scanner:1.0 (by /u/DEIN_REDDIT_NAME)',
 };
